@@ -1,0 +1,27 @@
+/* $Id: active_tags.css,v 1.1.2.1.6.3 2011/01/13 21:06:21 dragonwize Exp $ */
+
+.at-term-list {
+  padding: 5px 0;
+}
+
+.at-term {
+  background-color:#eee;
+  padding:2px;
+  display:inline;
+  margin:2px;
+  cursor:pointer;
+}
+
+.at-term-action-remove {
+  color:red;
+  padding-left:5px;
+}
+
+.at-term-entry {
+  width: 300px;
+  float: left;
+}
+
+.at-add-btn {
+  margin: 0 10px;
+}
