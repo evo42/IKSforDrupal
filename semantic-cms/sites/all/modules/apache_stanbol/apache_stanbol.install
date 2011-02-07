@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ *  Install & uninstall functions.
+ */
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function apache_stanbol_uninstall() {
+  // Delete settings from varible table.
+  $sql = "DELETE FROM {variable}
+          WHERE name LIKE 'apache_stanbol%'";
+  db_query($sql);
+}
+
+/**
+ * Update from 6.x to 7.x.
+ */
+/*
+function apache_stanbol_update_7000() {
+
+}
+*/

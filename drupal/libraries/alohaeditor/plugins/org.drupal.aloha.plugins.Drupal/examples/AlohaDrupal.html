@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    version="XHTML+RDFa 1.0" 
+    xml:lang="en"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:biografr="http://biografr.com/ontology#">
+    
+<head>
+
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+
+<title>Aloha Drupal - Semantic Editor</title>
+
+<!-- Aloha Editor Drupal -->
+<script>GENTICS_Aloha_base="/aloha-editor/Aloha-Editor/WebContent/";</script>
+<script type="text/javascript" src="../../../aloha.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Format/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Paste/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Paste/genericpastehandler.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.List/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Link/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Link/LinkList.js"></script>
+<!--
+
+-->
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Abbr/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.Image/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.CropNResize/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.CropNResize/js/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.CropNResize/js/jquery.Jcrop.min.js"></script>
+
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.GoogleTranslate/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.LinkChecker/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.DragAndDropFiles/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.DragAndDropFiles/deps/Ext.ux.XHRUpload.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.DragAndDropFiles/lib/DropFilesRepository.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.DragAndDropFiles/lib/uploader.js"></script>
+
+
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.FontSize/plugin.js"></script>
+<script type="text/javascript" src="../../../plugins/com.gentics.aloha.plugins.TextColor/plugin.js"></script>
+
+
+<!-- Aloha Editor Annotation Plugin -->
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/plugin.js"></script>
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/lib/annotationservicemanager.js"></script>
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/lib/annotationservice.js"></script>
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/lib/annotationwritermanager.js"></script>
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/lib/annotationwriter.js"></script>
+<!-- 
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/service/fise.js"></script>
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/service/zemanta.js"></script>
+-->
+<script type="text/javascript" src="../../com.gentics.aloha.plugins.Annotations/service/zemanta.js"></script>
+
+<!-- Example CSS -->
+<link rel="stylesheet" href="AlohaDrupal.css" />
+
+<!-- AutoSuggest jQuery Plugin -->
+<link rel="stylesheet" href="resources/autoSuggest.css" />
+<script type="text/javascript" src="resources/jquery.autoSuggest.js"></script>
+
+
+<!-- turn an element into editable Aloha continuous text -->
+<script type="text/javascript">
+GENTICS.Aloha.settings = {
+	// @todo use smartContentChange as object?
+	//smartContentChangeUniChars: [':', ';', '.'],
+	smartContentChange: {
+		delimiters: ['!', '?', ';', '.', ':', ',', '@', '*', '#', 'Enter', '\u0009'],
+		idle: 5000,
+		delay: 1000
+	},
+	logLevels: {'error': true, 'warn': true, 'info': true, 'debug': true},
+	errorhandling : false,
+	ribbon: false,
+	// proxyUrl settings -- after AJAXproxy plugin is available we'll use this one 
+	proxyUrl: 'http://localhost/aloha-editor/Aloha-Plugin-Annotations/proxy.php?url=',
+	"i18n": {
+		// let the system detect the users language
+		"acceptLanguage": 'q=0.6,en-us;q=0.7,en'
+	},
+	"plugins": {
+	 	"com.gentics.aloha.plugins.Link": {
+		  	// all links that match the targetregex will get set the target
+ 			// e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
+		  	targetregex : '^(?!.*aloha-editor.com).*',
+		  	// this target is set when either targetregex matches or not set
+		    // e.g. _blank opens all links in new window
+		  	target : '_blank',
+		  	// the same for css class as for target
+		  	cssclassregex : '^(?!.*aloha-editor.com).*',
+		  	cssclass : 'external'
+		},
+	 	"com.gentics.aloha.plugins.Table": {
+			config: ['table']
+		},
+		"com.gentics.aloha.plugins.Annotations": {
+		    "Services" : {
+		        "fise" : {
+		            //ApiEndpoint: 'http://localhost/aloha-editor/Aloha-Plugin-Annotations/examples/response.ld.json'
+		            ApiEndpoint: 'http://localhost:8080/engines/'
+		            //ApiEndpoint: 'http://labs.gentics.com:9000/engines/'
+		        },
+		        "zemanta" : {
+		            ApiEndpoint: 'http://api.zemanta.com/services/rest/0.0/',
+		            ApiKey: '9ggswgxca55yyunydyp77xnk',
+		            ApiMethod: 'zemanta.suggest_markup'
+		        }
+		    }
+		}
+  	}
+};
+
+$(document).ready(function() {
+
+	$('#contentAloha').aloha();
+    
+    // autoSuggest demo data; replace with ajax endpoint
+	var data = {items: [
+	    {value: "3", name: "Aloha Editor"},
+	    {value: "4", name: "Annotation Service"},
+	    {value: "5", name: "jQuery"},
+	    {value: "6", name: "Apache"},
+    ]};
+    
+    // preFillSuggestions 
+    var preFillSuggestions = [
+        {value: "1", name: "suggestion one", resource: "http://rdf.freebase.com/ns/en.suggestion_one"},
+        {value: "2", name: "suggestion two", resource: "http://rdf.freebase.com/ns/en.suggestion_two"},
+    ];
+    
+    $("#suggestions input[type=text]").autoSuggest(data.items, {selectedItemProp: "name", 
+                                                                searchObjProps: "name",
+                                                                startText: "Aloha Suggestions...", 
+                                                                preFill: preFillSuggestions, 
+                                                                selectionRemoved: function(elem) { 
+                                                                    removeSuggestion(elem); 
+                                                                    elem.fadeTo("fast", 0, function(){ elem.remove(); });
+                                                                }});
+    
+    // removed suggestions --> move to correction object?!
+    var removedSuggestions = [];
+    function removeSuggestion(elem) {
+        
+        removedSuggestions.push(elem);
+        
+        var el = elem.clone();
+        el.children('a').remove();
+        
+        $("#removedSuggestions ul").append(el);
+    }
+});  
+
+</script>
+
+
+<!-- test rdfquery 
+<script type="text/javascript">
+$(document).ready(function() {
+rdf = $('#contentRdfa').rdf();
+});  
+</script>
+-->
+</head>
+
+<body>
+<div id="main"> 
+<div id="bodyContent">
+    
+    <h2>Aloha Editor in Drupal - The Semantic Editor</h2>
+
+<div id="contentAloha" class="article">
+<p>Shadrake has written for a variety of newspapers, including The Daily Telegraph of London as well as the New Straits Times of neighbouring Malaysia. His previous book, The Yellow Pimpernels, told the tale of various attempts to escape from East Germany over the Berlin Wall. If convicted, he faces a two-year imprisonment and a fine.</p>
+<p></p>
+<p>Edit.</p>
+</div>
+
+<hr />
+<div>Status: <code><span id="aloha_status_value"></span></code></div>
+<hr />
+<div>Status2: <code><span id="aloha_status_value2"></span></code></div>
+
+<hr />
+<p>Suggestions from Annotation Service:</p>
+<div id="suggestions" >
+    <input type="text" value="" name="suggestions" />
+</div>
+
+<hr />
+<p style="font-size:xx-small">This removed Suggestions will not be added automaticly again. You can add them manually. Reload to empty stack.</p>
+<div id="removedSuggestions">
+    <ul>
+        <li class="as-removed-item" id="as-removed-aloha" style="font-size:xx-small">Aloha</li>
+    </ul>
+</div>
+
+<!-- 
+<hr />
+<p>rdfQuery Test</p>
+
+   <div id="contentRdfa">
+       <div id="meta">
+       </div>
+     <p>
+       <span about="#CharlesRobertDarwin" typeof="foaf:person" property="rdfs:label" datatype="">
+           <span property="foaf:firstname">Charles</span> Robert 
+           <span property="foaf:surname">Darwin</span>
+        </span> was 
+        
+        <span about="#CharlesRobertDarwin" rel="biografr:hasBirthPlace">born in 
+
+              
+              <span about="#Shrewsbury" typeof="vcard:address" property="rdfs:label" datatype="">
+                  <span property="vcard:locality">Shrewsbury</span>, 
+                  <span property="vcard:region">Shropshire</span>, 
+                  <span property="vcard:country">England</span>
+                 </span>
+                 
+        </span> on 
+        
+        <span about="#CharlesRobertDarwin" property="biografr:bornOn" content="1809-02-12" datatype="xsd:date">12 February 1809</span> 
+        
+        at his family home, the Mount. He was the fifth of six children of wealthy society doctor and financier 
+        
+        <span about="#CharlesRobertDarwin" rel="biografr:hasFather">
+            <span about="#RobertDarwin" typeof="foaf:Person">
+                <span property="rdfs:label" datatype="">Robert Darwin</span>
+            </span>
+        </span>, and Susannah Darwin (née Wedgwood). He was the grandson of Erasmus Darwin on his father’s side, and of Josiah Wedgwood on his mother’s side. Both families were largely Unitarian, though the Wedgwoods were adopting Anglicanism. Robert Darwin, himself quietly a freethinker, made a nod toward convention by having baby Charles baptised in the Anglican Church. Nonetheless, Charles and his siblings attended the Unitarian chapel with their mother, and in 1817, Charles joined the day school, run by its preacher. In July of that year, when Charles was eight years old, his mother died. From September 1818, he joined his older brother Erasmus attending the nearby Anglican Shrewsbury School as a boarder.
+     </p>
+     <p>
+       Darwin spent the summer of 1825 as an apprentice doctor, helping his father treat the poor of Shropshire. In the autumn, he went with Erasmus to the University of Edinburgh to study medicine, but was revolted by the brutality of surgery and neglected his medical studies. He learned taxidermy from John Edmonstone, a freed black slave who told him exciting tales of the South American rainforest. This experience gave him evidence that “Negroes and Europeans” were closely related despite superficial differences in appearance.
+     </p>
+   </div>
+
+<div id="summary">
+  <ul class="classes">
+    <li id="people" class="open">
+      <h2>People</h2>
+      <ul class="individuals">
+      </ul>
+    </li>
+    <li id="places" class="open">
+      <h2>Places</h2>
+      <ul class="individuals">
+      </ul>
+    </li>
+  </ul>
+</div>
+-->
+
+</div>
+</div>
+
+
+</body>
+</html>

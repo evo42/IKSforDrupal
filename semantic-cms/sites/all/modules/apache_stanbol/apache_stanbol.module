@@ -1,0 +1,168 @@
+<?php
+/**
+ * @file
+ * Apache Stanbol semantic cms functions
+ */
+
+function apache_stanbol_node_update($node) {
+	watchdog('apache stanbol', 'apache_stanbol_node_update: '.print_r($node, true));
+
+	apache_stanbol_node_insert($node);
+}
+
+/*function apache_stanbol_node_presave($node) {
+	watchdog('apache stanbol', 'apache_stanbol_node_presave: '.print_r($node, true));
+
+	apache_stanbol_node_insert($node);
+}*/
+
+/*function apache_stanbol_node_load($node) {
+	$metadata = file_get_contents('http://stanbol.IKSforDrupal.net:9000/store/metadata/node-'.$node->nid);
+	watchdog('apache stanbol', 'metadata: '.print_r($metadata, true));
+}*/
+
+function apache_stanbol_node_insert($node) {
+	watchdog('apache stanbol', 'apache_stanbol_node_insert: '.print_r($node, true));
+
+  if ($node->nid) {
+	// http://api.drupal.org/api/drupal/modules--node--node.module/function/_node_index_node
+	//variable_del('apache_stanbol_guid');
+	$stanbol_guid = variable_get('apache_stanbol_guid');
+	
+	if (empty($stanbol_guid)) {
+		$stanbol_guid = drupal_hash_base64(drupal_random_bytes(256));
+		variable_set('apache_stanbol_guid', $stanbol_guid);
+	}
+
+  // Render the node.
+  $build = node_view($node, 'search_index');
+  unset($build['#theme']);
+  $node->rendered = drupal_render($build);
+
+  $text = '<h1>' . check_plain($node->title) . '</h1>'."\r\n";
+  $text .= $node->rendered. ' ';
+
+  // Fetch extra data normally not visible
+  $extra = module_invoke_all('node_update_index', $node);
+  foreach ($extra as $t) {
+    $text .= $t." \r\n";
+  }
+	
+	$text = strip_tags($text);
+	$text = check_plain($text);
+	
+	$command = 'curl -i -X PUT -H "Content-Type:text/plain" --data "'.$text.'" http://stanbol.iksfordrupal.net:9000/store/content/node-'.$node->nid.'-'.$stanbol_guid.' ';
+	$info = shell_exec($command);
+	
+	watchdog('apache stanbol', 'create new store command: '.$command);
+	watchdog('apache stanbol', 'create new store item info: '.$info);
+	//watchdog('apache stanbol', 'create new store item text: '.$text);
+	
+	// get metadata
+	$metadata = @file_get_contents('http://stanbol.iksfordrupal.net:9000/store/metadata/node-'.$node->nid.'-'.$stanbol_guid);
+	$metadata = json_decode($metadata);
+	
+	if (is_object($metadata)) {
+		watchdog('apache stanbol', 'metadata: '.print_r($metadata, true));
+		
+		$i = 0;
+		$annotations = array();
+		foreach($metadata as $entities) {
+			foreach($entities as $entity) {
+				
+				$annotations[$i] = false;
+				
+				$annotations[$i]['reference'] = false;
+			    $annotations[$i]['type'] = false;
+			    $annotations[$i]['text'] = false;
+			    $annotations[$i]['label'] = false;
+			    $annotations[$i]['confidence'] = false;
+			    
+				//$annotations[$i]['urn'] = false;
+				foreach($entity as $key => $value) {
+				    
+					if ($key == 'http://fise.iks-project.eu/ontology/confidence') {
+						$annotations[$i]['confidence'] = getRdfText($value);
+					}
+					
+					if ($key == 'http://fise.iks-project.eu/ontology/entity-label') {
+						$annotations[$i]['label'] = getRdfText($value);
+					}
+					
+					if ($key == 'http://fise.iks-project.eu/ontology/selected-text') {
+						$annotations[$i]['text'] = getRdfText($value);
+					}
+					
+					if ($key == 'http://fise.iks-project.eu/ontology/entity-reference') {
+						$annotations[$i]['reference'] = getRdfText($value);
+					}
+					
+					if ($key == 'http://purl.org/dc/terms/type') {
+						$annotations[$i]['type'] = getRdfText($value);
+					}
+				}
+				$i++;
+			}
+		}
+		
+		watchdog('apache stanbol', 'annotations: '.print_r($annotations, true));
+
+		$entities = array();
+		foreach($annotations as $key => $entity) {
+			if ((int) $entity['confidence'] >= 0) {
+    		//if ((int) $entity['confidence'] >= 0 && !empty($entity['type'])) {
+				$entities[strtolower(md5($entity['label']))] = $entity;
+				//$entities[strtolower(md5($entity['text']))] = $entity;
+			}
+		}
+		
+		watchdog('apache stanbol', 'entities all: '.print_r($entities, true));
+
+	}
+
+	if (!isset($node->field_tags)) {
+		return false;
+	}
+
+	if (is_array($node->field_tags)) {
+	foreach ($node->field_tags['und'] as $key => $tag) {
+
+		$term = taxonomy_term_load($tag['tid']);
+		
+		$entity = false;
+		if (isset($entities[strtolower(md5($term->name))])) {
+			$entity = $entities[strtolower(md5($term->name))];
+		}
+
+		if ($entity) {
+		
+			if (empty($term->field_concept_uri['und'][0]['value'])) {
+				$term->field_concept_uri['und'][0]['value'] = $entity['reference'];
+				//$term->field_concept_type['und'][0]['value'] = $entity['type'];
+				$term->description = 'All content tagged with the term '.$entity['label'].'.';
+				taxonomy_term_save($term);
+			}
+		}
+	}
+	}
+	
+}
+}
+
+function getRdfText($text = false) {
+	$text = trim($text);
+	if (empty($text)) return false;
+	/*
+	http://fise.iks-project.eu/ontology/confidence->"0.43200016021728516"^^<http://www.w3.org/2001/XMLSchema#double>
+	http://fise.iks-project.eu/ontology/entity-label->"Chicago Election Precinct"^^<http://www.w3.org/2001/XMLSchema#string>
+	http://fise.iks-project.eu/ontology/entity-reference-><http://sws.geonames.org/5065576/>
+	*/
+	if (preg_match('/"(.*)"(.*)/', $text, $m)) {
+		return ($m[1]) ? $m[1] : false;
+	}
+	
+	if (preg_match('/^<(.*)>$/', $text, $m)) {
+		return ($m[1]) ? $m[1] : false;
+	}
+
+}

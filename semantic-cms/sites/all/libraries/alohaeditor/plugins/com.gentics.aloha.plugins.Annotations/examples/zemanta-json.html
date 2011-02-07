@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Zemanta Javascript sample</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<!-- copy these to your own server and minimize before use -->
+		<script type="text/javascript" src="http://friedcellcollective.net/js/jQuery.windowName/jQuery.windowName.plugin.js"></script>
+
+		<script type="text/javascript" src="http://www.json.org/json2.js"></script>
+		<!-- this is a sample function to get data from the zemanta api -->
+		<script type="text/javascript">
+			function prepareZemantaData(apikey, text) {
+				return {
+					method: 'zemanta.suggest',
+					format: 'wnjson',
+					api_key: apikey,
+					text: text
+					// for more options check http://developer.zemanta.com/docs/suggest/
+				};
+			}
+			function getZemantaAPI(data, callback) {
+				$.ajax({
+					url: 'http://api.zemanta.com/services/rest/0.0/',
+					type: 'POST',
+					data: data,
+					success: function (data, type) {
+						callback(JSON.parse(data));
+					}
+				});
+			}
+		</script>
+		<!-- this is needed to run the example -->
+		<script type="text/javascript">
+			jQuery(function ($) {
+				var keyRx = /[a-z0-9]{24}/;
+				$('#control').submit(function (ev) {
+					var key = $('#key').val(),
+						text = $('#text').val();
+					if (key && key.length === 24 && key.match(keyRx) && text) {
+						getZemantaAPI(
+							prepareZemantaData(key, text), 
+							function (data) {
+								$('#result').empty().text(JSON.stringify(data, null, 2));
+							}
+						);
+					}
+					ev.preventDefault();
+				});
+			});
+		</script>
+		<style type="text/css">
+			body {font-family:HelvetivaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; color:#222;margin:0;padding:0;line-height:1.5;}
+			h1 {border-bottom:.25em solid orange;margin:0 .5em;padding:.2em 0;font-size:2em;font-variant:small-caps;}
+			h2 {font-size:1.5em;font-weight:bold;line-height:1em;margin:0 0 1em;font-variant:small-caps;}
+			p, ul, ol, pre {margin:0 0 1.5em;}
+			.desc {margin:1.5em 1em 0;border-bottom:.125em solid orange;}
+			.procon .pro {color:#060;}
+			.procon .con {color:#600;}
+			a {color:#B13610;}
+			a:hover {text-decoration:none;}
+			#footer {border-top:.125em solid orange;margin:4em 1em 0;padding:.5em 0;text-align:right;}
+			#footer ul, #footer li {list-style:none;margin:0;padding:0;}
+			#footer li {display:inline;padding:.3em;font-size:.75em;}
+
+			#control {margin:1em;border-bottom:.125em solid orange;}
+			#control fieldset {border:0;padding:0;margin:0;}
+			#control fieldset ol {list-style:none;margin:0;padding:0;}
+			#control fieldset ol li {margin:0 0 .5em;padding:0;}
+			#control fieldset label {width:5em;display:-moz-inline-box;display:inline-block;}
+			#control fieldset label span {width:5em;display:-moz-inline-box;display:inline-block;}
+			#key {width:24em;}
+			#submit {font-size:1em;}
+			
+			#report {margin:0 1em;}
+		</style>
+	</head>
+
+	<body>
+		<h1>Zemanta API Javascript sample</h1>
+		<form id="control" action="#">
+			<h2>Test Zemanta API</h2>
+			<fieldset>
+				<ol>
+					<li>
+						<label for="key"><span>API key:</span></label>
+
+						<input type="text" name="key" id="key" value="" />
+					</li>
+					<li>
+						<label for="text"><span>Text:</span></label>
+						<textarea rows="10" cols="80" name="text" id="text">[enter text here]</textarea>
+					</li>
+					<li>
+						<input type="submit" value="Send to API" id="submit" />
+
+					</li>
+				</ol>
+			</fieldset>
+		</form>
+		<div id="report">
+			<h2>Results</h2>
+			<pre id="result">
+			</pre>
+
+		</div>
+		<div id="footer">
+			<ul>
+				<li><a href="http://www.zemanta.com">Zemanta</a></li>
+				<li><a href="http://friedcellcollective.net/outbreak">My blog</a></li>
+			</ul>
+		</div>
+	</body>
+
+</html>

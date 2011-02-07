@@ -1,0 +1,1 @@
+GENTICS.Aloha.Annotations.Namespace=function(a){if(a)try{this.prefix=this.getAttr("prefix");this.uri=this.getAttr("uri")}catch(b){throw b;}};GENTICS.Aloha.Annotations.Namespace.prototype.getAttr=function(a){return this.attrs[a]};GENTICS.Aloha.Annotations.Namespace.prototype.checkNamespace=function(){};

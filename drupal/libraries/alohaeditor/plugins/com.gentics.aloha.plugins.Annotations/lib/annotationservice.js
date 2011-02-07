@@ -1,0 +1,1 @@
+GENTICS.Aloha.Annotations.Service=function(a,b){this.serviceId=a;this.settings={};this.serviceName=b?b:a;GENTICS.Aloha.Annotations.AnnotationServiceManager.register(this)};GENTICS.Aloha.Annotations.Service.prototype.init=function(){};

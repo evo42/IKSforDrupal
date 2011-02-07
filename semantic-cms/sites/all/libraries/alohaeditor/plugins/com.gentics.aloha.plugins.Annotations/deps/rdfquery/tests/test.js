@@ -1,0 +1,1 @@
+load("lib/env-js/env.rhino.js");window.onload=function(){load("jquery/jquery-1.3.2.js");load("jquery.uri.js");load("jquery.xmlns.js");load("jquery.datatype.js");load("jquery.curie.js");load("jquery.rdf.js");load("jquery.rdfa.js");load("lib/env-js/testrunner.js");load("tests/jquery.curie.js");results()};window.location="tests/jquery.alltests.html";

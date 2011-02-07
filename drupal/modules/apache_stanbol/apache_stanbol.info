@@ -1,0 +1,9 @@
+name = Apache Stanbol
+description = Semantic services for CMS.
+dependencies[] = taxonomy
+dependencies[] = field
+dependencies[] = active_tags
+dependencies[] = wysiwyg
+;dependencies[] = alohaeditor
+package = Semantic services
+core = 7.x

@@ -1,0 +1,101 @@
+
+
+USE CASE:
+Liste mit Personen
+
+== Text snippet for annotation service ==
+
+0) init rdfContext
+
+smartContentChange holt inhalt  rdfConnector
+-> all dom objects where fise should read contend needs to be configured
+-> content auslesen via dom object / jquery
+-> info vom browser braucht zB kein text input
+-> freunde von facebook diveres api keys/username
+
+
+
+1) [aloha] user input
+
+<div id="content">
+
+<h1>Workshop Amsterdam</h1>
+<h2>Description</h2>
+<p>IKS Semantic Editor Workshop in Amsterdam with GENTICS (<a href="http://gentics.com" >gentics.com</a>) and Salzburg Research (salzburgresearch.at) and many others.</p>
+
+<h2>Participants</h2>
+<p>People showing some use cases.</p>
+
+<ul>
+    <li>
+        <a href="http://gentics.com/person/haymo/">Haymo</a> (<a href="mailto:haymo@gentics.com">haymo@gentics.com</a>)
+    </li>
+	<li>
+	    Nor
+	</li>
+</ul>
+
+</div>
+
+
+2) [aloha] trigger "smartContentChange" onEnter in list item (or after new paragraph)
+
+3) smartContentChange calls rdfContext.update() [rdfContext]
+-> all rdfConnectors get called the update method
+-> update method fetches data and writes triples with a callback function to the rdfContext databank
+-> event contextUpdated is triggered
+-> callback method apply configured rdf rules before adding triples to the databank
+
+--> discuss: how to ad meta data about fise info 
+
+--> all editables or tagContainer gets a databank attached; the global databank acts as global context store;
+
+4) 
+
+
+
+// todos
+- multiple databankes ermöglichen $.rdf.databank.fn = $.rdf.databank.prototype 
+
+
+
+
+== Annotation of text ==
+
+<div id="content" 
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:fc="http://xmlns.com/foaf/corp#">
+
+<h1>Workshop Amsterdam</h1>
+<h2>Description</h2>
+<p>IKS Semantic Editor Workshop in Amsterdam with 
+	<span property="fc:Company">
+      <span property="fc:name">GENTICS</span>
+      (<a rel="foaf:homepage" href="http://gentics.com" content="http://gentics.com">gentics.com</a>)
+    </span>
+and 
+<span property="fc:Company">
+  <span property="fc:name">Salzburg Research</span>
+  (<span property="foaf:homepage" content="http://salzburgresearch.at">salzburgresearch.at</span>)
+</span>
+and many others.
+</p>
+
+<h2>Participants</h2>
+<p>People showing some use cases.</p>
+
+<ul>
+    <li typeof="foaf:Person">
+        <a href="http://gentics.com/person/haymo/" rel="foaf:homepage" property="foaf:name">Haymo</a> (<a href="mailto:haymo@gentics.com" rel="foaf:mbox">haymo@gentics.com</a>)
+    </li>
+	<li typeof="foaf:Person">
+	    <a href="http://gentics.com/person/norbert/" rel="foaf:homepage" property="foaf:name">Norbert</a> (<a href="mailto:norbert@gentics.com" rel="foaf:mbox">norbert@gentics.com</a>)
+	</li>
+	<li typeof="foaf:Person">
+		<a href="http://id.evo42.net/rene/" rel="foaf:homepage" property="foaf:name">Rene</a> (<a href="mailto:rene@evo42.net" rel="foaf:mbox">rene@evo42.net</a>)
+	</li>
+</ul>
+
+</div>
+
+
